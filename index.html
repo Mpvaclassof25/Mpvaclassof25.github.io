@@ -51,58 +51,54 @@
     .flipped {
       transform: rotateY(-180deg);
     }
-
-    iframe {
-      margin-top: 20px;
-      border: none;
-    }
   </style>
 </head>
 <body>
   <h1>Pictures from the 8th Grade Graduates of 2025</h1>
   <h2>This website is to help remind 8th grade graduates of 2025 that it was fun and something they should cherish and use to make a brighter future for them.</h2>
 
-  <!-- Google Drive Images Web App Link -->
-  <a href="https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec" target="_blank">View Google Drive Images</a>
-
-  <!-- Google Drive Images Web App Embedded as an Iframe -->
-  <iframe src="https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec" width="100%" height="600px"></iframe>
-
   <div class="flipbook-container" id="flipbook"></div>
 
   <script>
-    // Fetch the images from the Google Apps Script web app
-    fetch('https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec')
-      .then(response => response.json())  // Parse the JSON response
+    // Replace this URL with your own Google Apps Script Web App URL
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec";
+
+    fetch(scriptUrl)
+      .then(res => res.json())
       .then(images => {
         const flipbook = document.getElementById('flipbook');
-        
-        // Loop through the images and add them to the flipbook
-        images.forEach(imageUrl => {
-          const photoDiv = document.createElement('div');
-          photoDiv.classList.add('photo');
-          
+        images.reverse(); // so first image appears on top
+
+        images.forEach(url => {
+          const photo = document.createElement('div');
+          photo.className = 'photo';
+
           const img = document.createElement('img');
-          img.src = imageUrl;  // Use the correct image URL from Google Drive
-          img.alt = 'Image from Google Drive';
-          
-          photoDiv.appendChild(img);
-          flipbook.appendChild(photoDiv);
+          img.src = url;
+          img.alt = "Drive Image";
+
+          photo.appendChild(img);
+          flipbook.appendChild(photo);
         });
       })
-      .catch(error => console.error('Error loading images:', error));
+      .catch(err => console.error("Failed to load images:", err));
+  </script>
 
-    // Flipbook logic
+  <script>
+    // Flipbook page flip logic
     const flipbook = document.getElementById('flipbook');
+
     flipbook.addEventListener('click', () => {
       const topPhoto = flipbook.lastElementChild;
 
-      topPhoto.classList.add('flipped');
+      if (topPhoto) {
+        topPhoto.classList.add('flipped');
 
-      setTimeout(() => {
-        topPhoto.classList.remove('flipped');
-        flipbook.insertBefore(topPhoto, flipbook.firstChild);
-      }, 800); // match the CSS transition time
+        setTimeout(() => {
+          topPhoto.classList.remove('flipped');
+          flipbook.insertBefore(topPhoto, flipbook.firstChild);
+        }, 800); // Match the CSS transition time
+      }
     });
   </script>
 </body>
