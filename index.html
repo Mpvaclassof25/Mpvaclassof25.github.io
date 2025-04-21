@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mpva Class Of 2025</title>
+  <title>MPVA Class of 2025</title>
   <style>
     body {
       margin: 0;
@@ -24,65 +24,86 @@
     .flipbook-container {
       perspective: 2000px;
       margin-top: 2em;
-    }
-
-    .flipbook {
       width: 600px;
       height: 400px;
       position: relative;
-      display: flex;
     }
 
-    .page {
-      width: 50%;
-      height: 100%;
+    .photo {
       position: absolute;
-      top: 0;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      transform-origin: left center;
-      transition: transform 0.6s ease;
+      width: 100%;
+      height: 100%;
       backface-visibility: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.8s ease;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
 
-    .page.right {
-      left: 50%;
-      transform-origin: right center;
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 4px;
     }
 
-    .page.turned {
+    .flipped {
       transform: rotateY(-180deg);
-      z-index: 2;
     }
 
+    iframe {
+      margin-top: 20px;
+      border: none;
+    }
   </style>
 </head>
 <body>
-  <h1>Pictures from the 8th grade graduates of 2025</h1>
-  <h2>This website is to help remind 8th grade graduates of 2025 that it was fun and something they should cherish and use to make a brighter future for them</h2>
+  <h1>Pictures from the 8th Grade Graduates of 2025</h1>
+  <h2>This website is to help remind 8th grade graduates of 2025 that it was fun and something they should cherish and use to make a brighter future for them.</h2>
 
-  <div class="flipbook-container">
-    <div class="flipbook" id="flipbook">
-      <!-- Front Page -->
-      <div class="page left" id="page1">
-        <img src="images/photo1.jpg" alt="Graduation 1" style="width:100%; height:100%; object-fit: cover;" />
-      </div>
-  
-      <!-- Back Page -->
-      <div class="page right" id="page2">
-        <img src="images/photo2.jpg" alt="Graduation 2" style="width:100%; height:100%; object-fit: cover;" />
-      </div>
-    </div>
-  </div>
-  
+  <!-- Google Drive Images Web App Link -->
+  <a href="https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec" target="_blank">View Google Drive Images</a>
+
+  <!-- Google Drive Images Web App Embedded as an Iframe -->
+  <iframe src="https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec" width="100%" height="600px"></iframe>
+
+  <div class="flipbook-container" id="flipbook"></div>
+
   <script>
+    // Fetch the images from the Google Apps Script web app
+    fetch('https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec')
+      .then(response => response.json())  // Parse the JSON response
+      .then(images => {
+        const flipbook = document.getElementById('flipbook');
+        
+        // Loop through the images and add them to the flipbook
+        images.forEach(imageUrl => {
+          const photoDiv = document.createElement('div');
+          photoDiv.classList.add('photo');
+          
+          const img = document.createElement('img');
+          img.src = imageUrl;  // Use the correct image URL from Google Drive
+          img.alt = 'Image from Google Drive';
+          
+          photoDiv.appendChild(img);
+          flipbook.appendChild(photoDiv);
+        });
+      })
+      .catch(error => console.error('Error loading images:', error));
+
+    // Flipbook logic
     const flipbook = document.getElementById('flipbook');
-    const page2 = document.getElementById('page2');
-  
     flipbook.addEventListener('click', () => {
-      page2.classList.toggle('turned');
+      const topPhoto = flipbook.lastElementChild;
+
+      topPhoto.classList.add('flipped');
+
+      setTimeout(() => {
+        topPhoto.classList.remove('flipped');
+        flipbook.insertBefore(topPhoto, flipbook.firstChild);
+      }, 800); // match the CSS transition time
     });
   </script>
-  
 </body>
 </html>
