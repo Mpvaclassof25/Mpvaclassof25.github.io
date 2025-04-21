@@ -60,14 +60,13 @@
   <div class="flipbook-container" id="flipbook"></div>
 
   <script>
-    // Replace this URL with your own Google Apps Script Web App URL
     const scriptUrl = "https://script.google.com/macros/s/AKfycbyueLY5X736FVDNyd3-lJV9OzBvQWgy8axWA4EX_5lQWXcbw7Kr8-Eg-B_rK7VfDndk/exec";
 
     fetch(scriptUrl)
       .then(res => res.json())
       .then(images => {
         const flipbook = document.getElementById('flipbook');
-        images.reverse(); // so first image appears on top
+        images.reverse(); // so the first image appears on top
 
         images.forEach(url => {
           const photo = document.createElement('div');
@@ -81,14 +80,15 @@
           flipbook.appendChild(photo);
         });
       })
-      .catch(err => console.error("Failed to load images:", err));
-  </script>
+      .catch(err => {
+        console.error("Failed to load images:", err);
+        const flipbook = document.getElementById('flipbook');
+        flipbook.innerHTML = "<p>Could not load images. Please try again later.</p>";
+      });
 
-  <script>
-    // Flipbook page flip logic
-    const flipbook = document.getElementById('flipbook');
-
-    flipbook.addEventListener('click', () => {
+    // Flipbook logic
+    document.addEventListener('click', () => {
+      const flipbook = document.getElementById('flipbook');
       const topPhoto = flipbook.lastElementChild;
 
       if (topPhoto) {
@@ -97,7 +97,7 @@
         setTimeout(() => {
           topPhoto.classList.remove('flipped');
           flipbook.insertBefore(topPhoto, flipbook.firstChild);
-        }, 800); // Match the CSS transition time
+        }, 800);
       }
     });
   </script>
