@@ -1,12 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mpva Class Of 2025</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mpva Class Of 2025</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1, h2 {
+      margin: 1em;
+      max-width: 800px;
+    }
+
+    .flipbook-container {
+      perspective: 2000px;
+      margin-top: 2em;
+    }
+
+    .flipbook {
+      width: 600px;
+      height: 400px;
+      position: relative;
+      display: flex;
+    }
+
+    .page {
+      width: 50%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transform-origin: left center;
+      transition: transform 0.6s ease;
+      backface-visibility: hidden;
+    }
+
+    .page.right {
+      left: 50%;
+      transform-origin: right center;
+    }
+
+    .page.turned {
+      transform: rotateY(-180deg);
+      z-index: 2;
+    }
+
+  </style>
 </head>
 <body>
-    <h1>Pictures from the 8th grade graduates of 2025 </h1>
-    <h2>This website is to help remind 8th grade graduates of 2025 that it was fun and something they should cherrish and use to make a brighter future for them</h2>
+  <h1>Pictures from the 8th grade graduates of 2025</h1>
+  <h2>This website is to help remind 8th grade graduates of 2025 that it was fun and something they should cherish and use to make a brighter future for them</h2>
+
+  <div class="flipbook-container">
+    <div class="flipbook" id="flipbook">
+      <!-- Front Page -->
+      <div class="page left" id="page1">
+        <img src="images/photo1.jpg" alt="Graduation 1" style="width:100%; height:100%; object-fit: cover;" />
+      </div>
+  
+      <!-- Back Page -->
+      <div class="page right" id="page2">
+        <img src="images/photo2.jpg" alt="Graduation 2" style="width:100%; height:100%; object-fit: cover;" />
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const flipbook = document.getElementById('flipbook');
+    const page2 = document.getElementById('page2');
+  
+    flipbook.addEventListener('click', () => {
+      page2.classList.toggle('turned');
+    });
+  </script>
+  
 </body>
 </html>
