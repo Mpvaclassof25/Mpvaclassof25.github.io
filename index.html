@@ -25,7 +25,7 @@
       perspective: 2000px;
       margin-top: 2em;
       width: 600px;
-      height: 400px;
+      height: 700px;
       position: relative;
     }
 
@@ -51,6 +51,46 @@
     .flipped {
       transform: rotateY(-180deg);
     }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background: #6200ee;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #3700b3;
+    }
+
+    #counter {
+  margin-top: 1em;
+  font-size: 18px;
+  color: #333;
+}
+.photo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 90%;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
   </style>
 </head>
 <body>
@@ -58,48 +98,90 @@
   <h2>This website is to help remind 8th grade graduates of 2025 that it was fun and something they should cherish and use to make a brighter future for them.</h2>
 
   <div class="flipbook-container" id="flipbook"></div>
+<p id="counter">Loading images...</p>
+
+  <div class="buttons">
+    <button id="prevBtn">⏪ Previous</button>
+    <button id="nextBtn">Next ⏩</button>
+  </div>
 
   <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbxZwEMEJMFPlGZr2gzhBs_vpe0Ghte7BaSXVQ4cpeq911hOC5P_Xvzn1lKD9e6k3bDp/exec";
-
+    let totalImages = 0;
+    let currentIndex = 1;
+  
+    function updateCounter() {
+      document.getElementById('counter').textContent = `Image ${currentIndex} of ${totalImages}`;
+    }
+  
+    function flipPage() {
+      const flipbook = document.getElementById('flipbook');
+      const topPhoto = flipbook.lastElementChild;
+  
+      if (topPhoto) {
+        topPhoto.classList.add('flipped');
+        setTimeout(() => {
+          topPhoto.classList.remove('flipped');
+          flipbook.insertBefore(topPhoto, flipbook.firstChild);
+          currentIndex = currentIndex < totalImages ? currentIndex + 1 : 1;
+          updateCounter();
+        }, 800);
+      }
+    }
+  
+    function flipBack() {
+      const flipbook = document.getElementById('flipbook');
+      const firstPhoto = flipbook.firstElementChild;
+  
+      if (firstPhoto) {
+        firstPhoto.classList.add('flipped');
+        setTimeout(() => {
+          firstPhoto.classList.remove('flipped');
+          flipbook.appendChild(firstPhoto);
+          currentIndex = currentIndex > 1 ? currentIndex - 1 : totalImages;
+          updateCounter();
+        }, 800);
+      }
+    }
+  
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipPage();
+      }
+    });
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('nextBtn').addEventListener('click', flipPage);
+      document.getElementById('prevBtn').addEventListener('click', flipBack);
+    });
+  
     fetch(scriptUrl)
       .then(res => res.json())
       .then(images => {
         const flipbook = document.getElementById('flipbook');
-        images.reverse(); // so the first image appears on top
-
+        images.reverse();
+        totalImages = images.length;
+        currentIndex = 1;
+        updateCounter();
+  
         images.forEach(url => {
           const photo = document.createElement('div');
           photo.className = 'photo';
-
+  
           const img = document.createElement('img');
           img.src = url;
           img.alt = "Drive Image";
-
+  
           photo.appendChild(img);
           flipbook.appendChild(photo);
         });
       })
       .catch(err => {
         console.error("Failed to load images:", err);
-        const flipbook = document.getElementById('flipbook');
-        flipbook.innerHTML = "<p>Could not load images. Please try again later.</p>";
+        document.getElementById('flipbook').innerHTML = "<p>Could not load images. Please try again later.</p>";
       });
-
-    // Flipbook logic
-    document.addEventListener('click', () => {
-      const flipbook = document.getElementById('flipbook');
-      const topPhoto = flipbook.lastElementChild;
-
-      if (topPhoto) {
-        topPhoto.classList.add('flipped');
-
-        setTimeout(() => {
-          topPhoto.classList.remove('flipped');
-          flipbook.insertBefore(topPhoto, flipbook.firstChild);
-        }, 800);
-      }
-    });
   </script>
+  
 </body>
 </html>
